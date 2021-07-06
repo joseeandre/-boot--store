@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Navbar from "../Navbar/Navbar";
 import ImageGallery from 'react-image-gallery';
 import "react-image-gallery/styles/css/image-gallery.css";
+import ProductsList from "../ProductsList/ProductsList";
 
 export default function Homepage() {
     return (
@@ -20,6 +21,7 @@ export default function Homepage() {
                     showFullscreenButton={false}
                     autoPlay={true} />
             </Container>
+            <ProductsList></ProductsList>
         </>
     );
 }
