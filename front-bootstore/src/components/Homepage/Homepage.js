@@ -20,8 +20,8 @@ export default function Homepage() {
                     showPlayButton={false}
                     showFullscreenButton={false}
                     autoPlay={true} />
+                <ProductsList></ProductsList>
             </Container>
-            <ProductsList></ProductsList>
         </>
     );
 }
