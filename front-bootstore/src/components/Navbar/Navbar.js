@@ -36,7 +36,7 @@ export default function NavBar(props) {
                         <input type="text" placeholder="Search" />
                         <Link to="/register">
                             <FaUserAlt className="icon"></FaUserAlt>
-                            <div className="menu-title">Login or Register</div>
+                            <div className="menu-title">{isLogged ? `My account` : `Login or Register`}</div>
                         </Link>
                         <Link to="/cart">
                             <FaShoppingCart className="icon"></FaShoppingCart>
