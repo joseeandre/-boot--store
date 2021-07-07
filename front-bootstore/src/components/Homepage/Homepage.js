@@ -7,6 +7,7 @@ import "react-image-gallery/styles/css/image-gallery.css";
 import ProductsList from "../ProductsList/ProductsList";
 
 export default function Homepage() {
+    const objectFilter = { tshirt: true, pants: true };
     return (
         <>
             <Navbar></Navbar>
@@ -20,14 +21,14 @@ export default function Homepage() {
                     showPlayButton={false}
                     showFullscreenButton={false}
                     autoPlay={true} />
-                <ProductsList></ProductsList>
+                <ProductsList objectFilter={objectFilter}></ProductsList>
             </Container>
         </>
     );
 }
 
 const Container = styled.div`
-    min-height:100vh;
+    min-height:87vh;
     width: 100vw;
 
     .gallery {

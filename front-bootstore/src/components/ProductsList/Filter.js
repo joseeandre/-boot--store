@@ -5,8 +5,8 @@ import { IconContext } from "react-icons";
 import { FaFilter } from "react-icons/fa";
 import Modal from "react-modal";
 
-export default function Filter() {
-    const objectFilter = { tshirt: true, pants: true };
+export default function Filter(props) {
+    const { objectFilter } = props;
     const tShirtSize = ["P", "M", "G", "GG"];
     const tShirtColor = ["blue", "white", "green", "yellow", "red"];
     const pantsSize = ["38", "40", "42", "44"];
@@ -27,7 +27,7 @@ export default function Filter() {
                             {tShirtColor.map((item) => <div className={`box-color ${item}`}></div>)}
                         </div>
                     </TshirtFilter>
-                    <PantsFilter className={objectFilter.tshirt ? `` : `hidden`}>
+                    <PantsFilter className={objectFilter.pants ? `` : `hidden`}>
                         <div className="category-title">Pants</div>
                         <div className="filter-class">Size</div>
                         <div className="items">
@@ -36,7 +36,7 @@ export default function Filter() {
                     </PantsFilter>
                 </div>
                 <FaFilter
-                    className="menu-mobile"
+                    className="mobile"
                     onClick={() => setModalMenuOpen(true)}>
                 </FaFilter>
                 <Modal
@@ -94,7 +94,7 @@ const Container = styled.div`
         font-weight: bold;
         color: black;
     }
-    .menu-mobile {
+    .mobile{
         display: none;
     }
     @media (max-width: 600px) {
@@ -102,7 +102,7 @@ const Container = styled.div`
         .desktop {
             display: none;
         }
-        .menu-mobile {
+        .mobile{
             display: inline-block;
         }
     }
