@@ -1,29 +1,43 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Navbar from "../Navbar/Navbar";
 import ProductsList from "../ProductsList/ProductsList";
+import axios from "axios";
 
 export default function PantsDetails() {
-    const shirt = { id: 0, image: "https://somarmalhas.com.br/site/wp-content/uploads/2018/03/camiseta-510x574.jpg" };
-    const tShirtSize = ["P", "M", "G", "GG"];
+    const pantsSizes = ["38", "40", "42", "44"];
+    const [pants, setPants] = useState([{image: "", name: "", description: "", price: ""}]);
+    const params = useParams();
+    const { id } = params;
+    const [pantsSize, setPantsSize] = useState("");
+    useEffect(() => {
+        const pantsRequest = axios.get(`http://localhost:4000/pants?id=${id}`);
+
+        pantsRequest.then((response) => {
+            setPants([...response.data]);
+        }).catch((error) => {
+            console.log(error);
+        })
+    }, []);
+
     return (
         <>
             <Navbar></Navbar>
             <Container>
-                <img src={shirt.image} alt="iamge" />
+                <img src={pants[0].image} alt="iamge" />
                 <div className="details">
                     <div className="title">
-                        Camiseta Calvin Klein Azul
+                        {pants[0].name}
                     </div>
                     <div className="description">
-                        Camiseta top de malha top com preco top e tudo top
+                        {pants[0].description}
                     </div>
                     <div className="filter-class">Size</div>
                     <div className="items">
-                        {tShirtSize.map((item) => <div className="filter">{item}</div>)}
+                        {pantsSizes.map((item) => <div className={item === pantsSize ? "filter border" : "filter"} onClick={() => setPantsSize(item)}>{item}</div>)}
                     </div>
-                    <div className="filter-class">$ 40.00</div>
+                    <div className="filter-class">{`$ ${pants[0].price}`}</div>
                     <button>Add to Cart</button>
                 </div>
             </Container>
@@ -62,6 +76,8 @@ const Container = styled.div`
         margin-top: 2vh;
         margin-left: 1vw;
         color: grey;
+        padding: 1vh;
+        border: 1px solid grey;
     }
     .description {
         font-size: 2vh;
@@ -71,6 +87,9 @@ const Container = styled.div`
         margin-top: 5vh;
         width: 200px;
         height: 60px;
+    }
+    .border {
+        border: 2px solid black;
     }
     @media (max-width: 600px) {
         flex-direction: column;

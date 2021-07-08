@@ -12,9 +12,9 @@ export default function Pants(props) {
             <div className="product" onClick={() => history.push(`/pants/${pants.id}`)}>
                 <img src={pants.image} alt="pants" />
                 <div className="description">
-                    Blue Tshirt Calvin Klein
+                    {pants.name}
                 </div>
-                <strong className="description">$ 40.00</strong>
+                <strong className="description">{`$ ${pants.price}`}</strong>
                 <button>Buy</button>
             </div>
         </Container>

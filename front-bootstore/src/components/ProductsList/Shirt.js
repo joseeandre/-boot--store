@@ -12,9 +12,9 @@ export default function Shirt(props) {
             <div className="product" onClick={() => history.push(`/shirts/${shirt.id}`)}>
                 <img src={shirt.image} alt="shirt" />
                 <div className="description">
-                    Blue Tshirt Calvin Klein
+                    {shirt.name}
                 </div>
-                <strong className="description">$ 40.00</strong>
+                <strong className="description">{`$ ${shirt.price}`}</strong>
                 <button>Buy</button>
             </div>
         </Container>
@@ -32,6 +32,7 @@ const Container = styled.div`
 
     img  {
         width: 150px;
+        height: 150px;
     }
     .product {
         display: flex;

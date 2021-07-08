@@ -1,29 +1,43 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Navbar from "../Navbar/Navbar";
 import ProductsList from "../ProductsList/ProductsList";
+import axios from "axios";
 
 export default function ShirtDetails() {
-    const shirt = { id: 0, image: "https://somarmalhas.com.br/site/wp-content/uploads/2018/03/camiseta-510x574.jpg" };
     const tShirtSize = ["P", "M", "G", "GG"];
+    const [shirt, setShirt] = useState([{image: "", name: "", description: "", price: ""}]);
+    const params = useParams();
+    const { id } = params;
+    const [shirtSize, setShirtSize] = useState("");
+    useEffect(() => {
+        const shirtsRequest = axios.get(`http://localhost:4000/shirts?id=${id}`);
+
+        shirtsRequest.then((response) => {
+            setShirt([...response.data]);
+        }).catch((error) => {
+            console.log(error);
+        })
+    }, []);
+
     return (
         <>
             <Navbar></Navbar>
             <Container>
-                <img src={shirt.image} alt="iamge" />
+                <img src={shirt[0].image} alt="iamge" />
                 <div className="details">
                     <div className="title">
-                        Camiseta Calvin Klein Azul
+                        {shirt[0].name}
                     </div>
                     <div className="description">
-                        Camiseta top de malha top com preco top e tudo top
+                        {shirt[0].description}
                     </div>
                     <div className="filter-class">Size</div>
                     <div className="items">
-                        {tShirtSize.map((item) => <div className="filter">{item}</div>)}
+                        {tShirtSize.map((item) => <div className={item === shirtSize ? "filter border" : "filter"} onClick={() => setShirtSize(item)}>{item}</div>)}
                     </div>
-                    <div className="filter-class">$ 40.00</div>
+                    <div className="filter-class">{`$ ${shirt[0].price}`}</div>
                     <button>Add to Cart</button>
                 </div>
             </Container>
@@ -62,6 +76,8 @@ const Container = styled.div`
         margin-top: 2vh;
         margin-left: 1vw;
         color: grey;
+        padding: 1vh;
+        border: 1px solid grey;
     }
     .description {
         font-size: 2vh;
@@ -71,6 +87,9 @@ const Container = styled.div`
         margin-top: 5vh;
         width: 200px;
         height: 60px;
+    }
+    .border {
+        border: 2px solid black;
     }
     @media (max-width: 600px) {
         flex-direction: column;

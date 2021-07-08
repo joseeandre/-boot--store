@@ -6,11 +6,17 @@ import { FaFilter } from "react-icons/fa";
 import Modal from "react-modal";
 
 export default function Filter(props) {
-    const { objectFilter } = props;
+    const { objectFilter, setShirtsFiltered, shirtsList } = props;
     const tShirtSize = ["P", "M", "G", "GG"];
     const tShirtColor = ["blue", "white", "green", "yellow", "red"];
-    const pantsSize = ["38", "40", "42", "44"];
+    const pantsSizes = ["38", "40", "42", "44"];
     const [modalMenuIsOpen, setModalMenuOpen] = useState(false);
+    const [shirtSize, setShirtSize] = useState("");
+    const [pantsSize, setPantsSize] = useState("");
+    function filterColor(color) {
+        const filteredArray = shirtsList.filter((item) => item.color === color);
+        setShirtsFiltered([...filteredArray]);
+    }
     return (
         <IconContext.Provider value={{ className: "react-icons" }}>
             <Container>
@@ -20,18 +26,19 @@ export default function Filter(props) {
                         <div className="category-title">T-shirts</div>
                         <div className="filter-class">Size</div>
                         <div className="items">
-                            {tShirtSize.map((item) => <div className="filter">{item}</div>)}
+                            {tShirtSize.map((item) => <div className={item === shirtSize ? "filter border" : "filter"} onClick={() => setShirtSize(item)}>{item}</div>)}
                         </div>
                         <div className="filter-class">Color</div>
                         <div className="items">
-                            {tShirtColor.map((item) => <div className={`box-color ${item}`}></div>)}
+                            {tShirtColor.map((item) => <div className={`box-color ${item}`} onClick={() => filterColor(item)}></div>)}
+                            <div className="box" onClick={() => setShirtsFiltered(shirtsList)}>none</div>
                         </div>
                     </TshirtFilter>
                     <PantsFilter className={objectFilter.pants ? `` : `hidden`}>
                         <div className="category-title">Pants</div>
                         <div className="filter-class">Size</div>
                         <div className="items">
-                            {pantsSize.map((item) => <div className="filter">{item}</div>)}
+                            {pantsSizes.map((item) => <div className={item === pantsSize ? "filter border" : "filter"} onClick={() => setPantsSize(item)}>{item}</div>)}
                         </div>
                     </PantsFilter>
                 </div>
@@ -48,18 +55,19 @@ export default function Filter(props) {
                         <div className="category-title">T-shirts</div>
                         <div className="filter-class">Size</div>
                         <div className="items">
-                            {tShirtSize.map((item) => <div className="filter">{item}</div>)}
+                            {tShirtSize.map((item) => <div className={item === shirtSize ? "filter border" : "filter"} onClick={() => setShirtSize(item)}>{item}</div>)}
                         </div>
                         <div className="filter-class">Color</div>
                         <div className="items">
-                            {tShirtColor.map((item) => <div className={`box-color ${item}`}></div>)}
+                            {tShirtColor.map((item) => <div className={`box-color ${item}`} onClick={() => filterColor(item)}></div>)}
+                            <div className="box" onClick={() => setShirtsFiltered(shirtsList)}>none</div>
                         </div>
                     </TshirtFilter>
-                    <PantsFilter className={objectFilter.tshirt ? `` : `hidden`}>
+                    <PantsFilter className={objectFilter.pants ? `` : `hidden`}>
                         <div className="category-title">Pants</div>
                         <div className="filter-class">Size</div>
                         <div className="items">
-                            {pantsSize.map((item) => <div className="filter">{item}</div>)}
+                            {pantsSizes.map((item) => <div className={item === pantsSize ? "filter border" : "filter"} onClick={() => setPantsSize(item)}>{item}</div>)}
                         </div>
                     </PantsFilter>
                 </Modal>
@@ -93,6 +101,9 @@ const Container = styled.div`
         font-size: 30px;
         font-weight: bold;
         color: black;
+    }
+    .border {
+        border: 2px solid black;
     }
     .mobile{
         display: none;
@@ -133,6 +144,8 @@ const TshirtFilter = styled.div`
         margin-top: 2vh;
         margin-left: 1vw;
         color: grey;
+        padding: 1vh;
+        border: 1px solid grey;
     }
     .items {
         display: flex;
@@ -143,6 +156,15 @@ const TshirtFilter = styled.div`
         margin-top: 2vh;
         margin-left: 1vw;
         border: 1px solid grey;
+    }
+    .box {
+        width: 2vh;
+        height: 2vh;
+        margin-top: 2vh;
+        margin-left: 1vw;
+    }
+    .border {
+        border: 2px solid black;
     }
     .blue {
         background: blue;
@@ -186,6 +208,11 @@ const PantsFilter = styled.div`
         margin-top: 2vh;
         margin-left: 1vw;
         color: grey;
+        padding: 1vh;
+        border: 1px solid grey;
+    }
+    .border {
+        border: 2px solid black;
     }
     .items {
         display: flex;

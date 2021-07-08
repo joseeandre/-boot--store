@@ -6,7 +6,7 @@ const user = "postgres";
 const password = "123456";
 const host = 'localhost';
 const port_database = 5432;
-const database = 'mywallet';
+const database = 'bootstore';
 
 
 const databaseConfig = {
