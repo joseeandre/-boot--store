@@ -64,7 +64,7 @@ const Container = styled.div`
     padding: 0 10vw;
     width: 100vw;
     height: 13vh;
-
+    
     .hidden {
         display: none;
     }
