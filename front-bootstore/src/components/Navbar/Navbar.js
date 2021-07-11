@@ -68,7 +68,6 @@ const Container = styled.div`
     padding: 0 10vw;
     width: 100vw;
     height: 13vh;
-
     .category {
         font-size: 2.3vh;
         margin-left: 1vw;
