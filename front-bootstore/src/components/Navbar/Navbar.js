@@ -16,6 +16,8 @@ export default function NavBar(props) {
             <Container>
                 <Link to="/"><div className="logo">bootstore</div></Link>
                 <div className="menu">
+                    <Link to="/shirts"><div className="category">T-shirts</div></Link>
+                    <Link to="/pants"><div className="category">Pants</div></Link>
                     <input type="text" placeholder="Search" />
                     <Link to="/register"><FaUserAlt className="icon"></FaUserAlt></Link>
                     <Link to="/cart"><FaShoppingCart className="icon"></FaShoppingCart></Link>
@@ -34,6 +36,8 @@ export default function NavBar(props) {
                 >
                     <NavBarMobile>
                         <input type="text" placeholder="Search" />
+                        <Link to="/shirts"><div className="category">T-shirts</div></Link>
+                        <Link to="/pants"><div className="category">Pants</div></Link>
                         <Link to="/register">
                             <FaUserAlt className="icon"></FaUserAlt>
                             <div className="menu-title">{isLogged ? `My account` : `Login or Register`}</div>
@@ -64,7 +68,10 @@ const Container = styled.div`
     padding: 0 10vw;
     width: 100vw;
     height: 13vh;
-    
+    .category {
+        font-size: 2.3vh;
+        margin-left: 1vw;
+    }
     .hidden {
         display: none;
     }
@@ -77,9 +84,10 @@ const Container = styled.div`
         height: 3vh;
         width: 16vw;
         border-radius: 5px;
+        margin-left: 1vw;
     }
     .menu {
-        width: 30vw;
+        width: 50vw;
         display: flex;
         justify-content: flex-end;
     }
