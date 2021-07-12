@@ -54,7 +54,7 @@ server.post('/sign-up', async (req, res) => {
     } else {
       res.sendStatus(404);
     }
-  } catch (e){
+  } catch (e) {
     console.log(e);
     res.sendStatus(500);
   }
@@ -68,7 +68,7 @@ server.post('/logout', async (req, res) => {
     await connection.query(`DELETE FROM sessions WHERE "clientId"=$1`, [clientId.rows[0].clientId]);
     await connection.query(`UPDATE clients SET islogged=$1 WHERE id=$2`, [false, clientId.rows[0].clientId]);
     res.sendStatus(200);
-  } catch (e){
+  } catch (e) {
     console.log(e);
     res.sendStatus(500);
   }
@@ -79,17 +79,13 @@ server.get('/cart', async (req, res) => {
   if (!req.headers.authorization) return res.sendStatus(401);
 
   const token = req.headers.authorization.substring(7,);
-<<<<<<< HEAD
   const client = await connection.query(`SELECT clients.*, sessions.token FROM clients JOIN sessions ON sessions."clientId" = clients.id WHERE sessions.token=$1`, [token]);
-=======
-  const client = await connection.query(`SELECT clients.*, sessions.token FROM clients JOIN sessions ON sessions."clientId" = clients.id WHERE sessions.token=$1`,[token] );
-  if(client.rows.length === 0) return res.sendStatus(404);
+  if (client.rows.length === 0) return res.sendStatus(404);
 
-  const pants = await connection.query(`SELECT pants.*, items.size, items.quantity FROM pants JOIN items ON pants.id = items."productId" WHERE items."productCategory" = 2 AND items."clientId"=$1`,[client.rows[0].id]);
-  const shirts = await connection.query(`SELECT shirts.*, items.size, items.quantity FROM shirts JOIN items ON shirts.id = items."productId" WHERE items."productCategory" = 1 AND items."clientId"=$1`,[client.rows[0].id]);
+  const pants = await connection.query(`SELECT pants.*, items.size, items.quantity FROM pants JOIN items ON pants.id = items."productId" WHERE items."productCategory" = 2 AND items."clientId"=$1`, [client.rows[0].id]);
+  const shirts = await connection.query(`SELECT shirts.*, items.size, items.quantity FROM shirts JOIN items ON shirts.id = items."productId" WHERE items."productCategory" = 1 AND items."clientId"=$1`, [client.rows[0].id]);
   const cart = [...pants.rows, ...shirts.rows];
   res.send(cart);
->>>>>>> 6a2a63b0d8739ea1ff1c2fd22e0ff74e032e112b
 
 })
 
@@ -113,49 +109,46 @@ server.post('/add-to-cart', async (req, res) => {
   }
 })
 
-<<<<<<< HEAD
 server.post("/add-shirt", async (req, res) => {
   const errors = insertShirtSchema.validate(req.body).error;
   console.log(errors)
   if (errors) {
     return res.sendStatus(404);
   }
-=======
-server.post('/remove-from-cart', async (req,res) => {
-  if(!req.headers.authorization) return res.sendStatus(401);
-  
-  const token = req.headers.authorization.substring(7,);
-  const client = await connection.query(`SELECT clients.*, sessions.token FROM clients JOIN sessions ON sessions."clientId" = clients.id WHERE sessions.token=$1`,[token] );
-  if(client.rows.length > 0){
-    const {productId, productCategory, size} = req.body;
-    const item = await connection.query(`SELECT * FROM items WHERE "productId"=$1 AND "productCategory"=$2 AND "clientId"=$3 AND size=$4`,[productId, productCategory, client.rows[0].id, size]);
-    if(item.rows[0].quantity === 1){
-      await connection.query(`DELETE FROM items WHERE id=$1`,[item.rows[0].id]);
-    } else {
-      await connection.query(`UPDATE items SET quantity=$1 WHERE id=$2`,[item.rows[0].quantity-1, item.rows[0].id]);   
-    }
-    res.sendStatus(200);
-  
-  } else {
-    res.sendStatus(404);
-  }
-})
+  server.post('/remove-from-cart', async (req, res) => {
+    if (!req.headers.authorization) return res.sendStatus(401);
 
-server.post('/checkout', async (req,res) => {
-  if(!req.headers.authorization) return res.sendStatus(401);
-  
-  const token = req.headers.authorization.substring(7,);
-  const client = await connection.query(`SELECT clients.*, sessions.token FROM clients JOIN sessions ON sessions."clientId" = clients.id WHERE sessions.token=$1`,[token] );
-  if(client.rows.length > 0){
-    const {total, date} = req.body;
-    await connection.query(`DELETE FROM items WHERE "clientId"=$1`, [client.rows[0].id]);
-    await connection.query(`INSERT INTO checkouts("clientId",total,date) VALUES ($1,$2,$3)`,[client.rows[0].id, total, date]);
-    res.sendStatus(200);
-  } else {
-    res.sendStatus(404);
-  }
-})
->>>>>>> 6a2a63b0d8739ea1ff1c2fd22e0ff74e032e112b
+    const token = req.headers.authorization.substring(7,);
+    const client = await connection.query(`SELECT clients.*, sessions.token FROM clients JOIN sessions ON sessions."clientId" = clients.id WHERE sessions.token=$1`, [token]);
+    if (client.rows.length > 0) {
+      const { productId, productCategory, size } = req.body;
+      const item = await connection.query(`SELECT * FROM items WHERE "productId"=$1 AND "productCategory"=$2 AND "clientId"=$3 AND size=$4`, [productId, productCategory, client.rows[0].id, size]);
+      if (item.rows[0].quantity === 1) {
+        await connection.query(`DELETE FROM items WHERE id=$1`, [item.rows[0].id]);
+      } else {
+        await connection.query(`UPDATE items SET quantity=$1 WHERE id=$2`, [item.rows[0].quantity - 1, item.rows[0].id]);
+      }
+      res.sendStatus(200);
+
+    } else {
+      res.sendStatus(404);
+    }
+  })
+
+  server.post('/checkout', async (req, res) => {
+    if (!req.headers.authorization) return res.sendStatus(401);
+
+    const token = req.headers.authorization.substring(7,);
+    const client = await connection.query(`SELECT clients.*, sessions.token FROM clients JOIN sessions ON sessions."clientId" = clients.id WHERE sessions.token=$1`, [token]);
+    if (client.rows.length > 0) {
+      const { total, date } = req.body;
+      await connection.query(`DELETE FROM items WHERE "clientId"=$1`, [client.rows[0].id]);
+      await connection.query(`INSERT INTO checkouts("clientId",total,date) VALUES ($1,$2,$3)`, [client.rows[0].id, total, date]);
+      res.sendStatus(200);
+    } else {
+      res.sendStatus(404);
+    }
+  })
 
   try {
     const name = stripHtml(req.body.name.trim()).result;
