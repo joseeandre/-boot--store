@@ -51,6 +51,38 @@ ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
 
 
 --
+-- Name: checkouts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.checkouts (
+    id integer NOT NULL,
+    "clientId" integer NOT NULL,
+    total text NOT NULL,
+    date date NOT NULL
+);
+
+
+--
+-- Name: checkouts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.checkouts_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: checkouts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.checkouts_id_seq OWNED BY public.checkouts.id;
+
+
+--
 -- Name: clients; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -256,6 +288,13 @@ ALTER TABLE ONLY public.categories ALTER COLUMN id SET DEFAULT nextval('public.c
 
 
 --
+-- Name: checkouts id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.checkouts ALTER COLUMN id SET DEFAULT nextval('public.checkouts_id_seq'::regclass);
+
+
+--
 -- Name: clients id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -306,23 +345,30 @@ INSERT INTO public.categories VALUES (2, 'Pants');
 
 
 --
+-- Data for Name: checkouts; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+INSERT INTO public.checkouts VALUES (1, 1, '480.50', '2021-07-11');
+INSERT INTO public.checkouts VALUES (2, 1, '480.50', '2021-07-11');
+INSERT INTO public.checkouts VALUES (3, 1, '80.50', '2021-07-11');
+INSERT INTO public.checkouts VALUES (4, 1, '490.50', '2021-07-11');
+INSERT INTO public.checkouts VALUES (5, 1, '400.50', '2021-07-11');
+INSERT INTO public.checkouts VALUES (6, 1, '150.50', '2021-07-11');
+
+
+--
 -- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 INSERT INTO public.clients VALUES (2, 'robot@email.com', '$2b$10$8N1JxxT6QAYCPVChkviU1OTLQ/Stw/Uhaey5LZw/j2cVb6j/vnaNa', 'robot', false);
-INSERT INTO public.clients VALUES (1, 'user@email.com', '$2b$10$CRkrPHiIBkdKrfWItBULPe4S5X1lvH8Vl9YZpdgDXGQ7ubq0SpUlm', 'user', false);
 INSERT INTO public.clients VALUES (3, 'test@email.com', '$2b$10$SRU3RF9vNHAmIp/FoPAEYeITaVfJcPp26xg2F929X13W8vPw8rXJ.', 'test', false);
+INSERT INTO public.clients VALUES (1, 'user@email.com', '$2b$10$CRkrPHiIBkdKrfWItBULPe4S5X1lvH8Vl9YZpdgDXGQ7ubq0SpUlm', 'user', true);
 
 
 --
 -- Data for Name: items; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.items VALUES (1, 1, 2, 1, '44', 2);
-INSERT INTO public.items VALUES (2, 1, 2, 1, '38', 1);
-INSERT INTO public.items VALUES (3, 1, 2, 1, '40', 1);
-INSERT INTO public.items VALUES (4, 2, 2, 1, '40', 1);
-INSERT INTO public.items VALUES (5, 1, 1, 1, 'M', 1);
 INSERT INTO public.items VALUES (6, 2, 1, 3, 'P', 1);
 
 
@@ -349,6 +395,7 @@ INSERT INTO public.pants VALUES (7, 'Calca zoada da puma', 'https://cdn.awsli.co
 -- Data for Name: sessions; Type: TABLE DATA; Schema: public; Owner: -
 --
 
+INSERT INTO public.sessions VALUES (21, 1, 'b619d58b-5dca-4ecf-88ce-fa5b7c95c3b2');
 
 
 --
@@ -380,6 +427,13 @@ SELECT pg_catalog.setval('public.categories_id_seq', 2, true);
 
 
 --
+-- Name: checkouts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.checkouts_id_seq', 6, true);
+
+
+--
 -- Name: clients_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
@@ -390,7 +444,7 @@ SELECT pg_catalog.setval('public.clients_id_seq', 3, true);
 -- Name: items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.items_id_seq', 6, true);
+SELECT pg_catalog.setval('public.items_id_seq', 14, true);
 
 
 --
@@ -411,7 +465,7 @@ SELECT pg_catalog.setval('public.session_id_seq', 1, false);
 -- Name: sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.sessions_id_seq', 19, true);
+SELECT pg_catalog.setval('public.sessions_id_seq', 21, true);
 
 
 --
