@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Navbar from "../Navbar/Navbar";
 import ProductsList from "../ProductsList/ProductsList";
 import axios from "axios";
+import UserContext from "../contexts/UserContext";
 
 export default function ShirtDetails() {
     const tShirtSize = ["P", "M", "G", "GG"];
@@ -11,6 +12,8 @@ export default function ShirtDetails() {
     const params = useParams();
     const { id } = params;
     const [shirtSize, setShirtSize] = useState("");
+    const {clientInformations, isLogged, setClientInformations, setIsLogged} = useContext(UserContext);
+
     useEffect(() => {
         const shirtsRequest = axios.get(`http://localhost:4000/shirts?id=${id}`);
 
@@ -20,6 +23,36 @@ export default function ShirtDetails() {
             console.log(error);
         })
     }, []);
+
+
+
+    function addToCart(){
+        if(shirtSize === '') {
+            alert("select a size");
+            return;
+        }
+
+        if(!isLogged){
+            alert("Please login to add this item to your cart :)");
+            return;
+        }
+
+        const body = {productId: id, productCategory: shirt[0].category_id, size: shirtSize}
+        const config = {
+            headers: {
+                "Authorization": "Bearer " + clientInformations.token
+            }
+        }
+        console.log(body);
+        const request = axios.post('http://localhost:4000/add-to-cart', body, config);
+        request.then(reply => {
+            alert("Product added to your cart :)");
+        })
+        request.catch(error => {
+            console.log(error);
+        })
+    }
+
 
     return (
         <>
@@ -38,7 +71,7 @@ export default function ShirtDetails() {
                         {tShirtSize.map((item) => <div className={item === shirtSize ? "filter border" : "filter"} onClick={() => setShirtSize(item)}>{item}</div>)}
                     </div>
                     <div className="filter-class">{`$ ${shirt[0].price}`}</div>
-                    <button>Add to Cart</button>
+                    <button onClick={addToCart} >Add to Cart</button>
                 </div>
             </Container>
         </>

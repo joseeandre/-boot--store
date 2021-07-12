@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import NavBar from '../Navbar/Navbar';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { IconContext } from "react-icons";
 import { IoEye, IoEyeOff } from "react-icons/io5";
@@ -24,6 +24,7 @@ export default function SignUp(){
     const [emailError, setEmailError] = useState(false);
     const [shakeOnEmailError, setShakeOnEmailError] = useState(false);
     const [visibility, setVisibility] = useState(false);
+    const history = useHistory();
 
     function signUp(e){
         e.preventDefault();
@@ -37,9 +38,10 @@ export default function SignUp(){
             return;
         }
         
-        const body = {name, email, password};
+        const body = {name, email, password, confirmPassword};
         const request = axios.post("http://localhost:4000/sign-up", body);
         request.then(reply => {
+            history.push('/register');
 
         })
         request.catch(() => {
