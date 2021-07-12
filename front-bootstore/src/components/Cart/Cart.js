@@ -7,9 +7,16 @@ import Item from './Item';
 export default function Cart(){
     const [numberOfProducts, setNumberOfProducts] = useState(0);
     const [items, setItems] = useState([]);
+    const token = JSON.parse(localStorage.getItem("clientInformations"))?.token;
+    console.log(token);
+    const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
 
     useEffect(() => {
-        const request = axios.get('https://bootstoree.herokuapp.com/cart');
+        const request = axios.get('https://bootstoree.herokuapp.com/cart', config);
         request.then(reply => {
             console.log(reply.data);
             setNumberOfProducts(reply.data.length);
@@ -22,7 +29,7 @@ export default function Cart(){
             <Content>
             <ClientCart>
                 <Items>
-                    <ItemsTitle>Your Card ({numberOfProducts})</ItemsTitle>
+                    <ItemsTitle>Your Cart ({numberOfProducts})</ItemsTitle>
                     {items.map(item => <Item item={item}></Item>)}
                 </Items>
                 <Summary>
