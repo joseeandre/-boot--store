@@ -5,9 +5,20 @@ import Navbar from "../Navbar/Navbar";
 import ImageGallery from 'react-image-gallery';
 import "react-image-gallery/styles/css/image-gallery.css";
 import ProductsList from "../ProductsList/ProductsList";
+import {useContext, useEffect} from 'react';
+import UserContext from "../contexts/UserContext";
 
 export default function Homepage() {
     const objectFilter = { tshirt: true, pants: true };
+    const {setIsLogged, setClientInformations} = useContext(UserContext);
+    useEffect(() => {
+        const informations = JSON.parse(localStorage.getItem("clientInformations"));
+        if(!!informations){
+            setClientInformations(informations);
+            setIsLogged(true);
+        }
+    }, [])
+
     return (
         <>
             <Navbar></Navbar>

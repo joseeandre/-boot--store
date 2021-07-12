@@ -5,11 +5,103 @@ import connection from "./database/database.js";
 import { insertShirtSchema } from './schemas/shirtsSchema.js';
 import { insertPantsSchema } from './schemas/pantsSchema.js';
 import { insertCategorySchema } from './schemas/categoriesSchema.js';
+import { loginSchema, signUpSchema } from "./schemas/userSchemas.js";
+import bcrypt from 'bcrypt';
+import { v4 as uuid } from 'uuid';
 
 const server = express();
 
 server.use(cors());
 server.use(express.json());
+
+
+
+server.post('/sign-in', async (req, res) => {
+  try {
+    const { error } = loginSchema.validate(req.body);
+    if (!error) {
+      const { email, password } = req.body;
+      const client = await connection.query(`SELECT * FROM clients WHERE email=$1`, [email]);
+      if (client.rows.length > 0 && bcrypt.compareSync(password, client.rows[0].password)) {
+        await connection.query(`UPDATE clients SET islogged=$1 WHERE id=$2`, [true, client.rows[0].id]);
+        const token = uuid();
+        await connection.query(`INSERT INTO sessions("clientId", token) VALUES ($1,$2)`, [client.rows[0].id, token]);
+        res.send({ name: client.rows[0].name, email: email, id: client.rows[0].id, token: token });
+      } else {
+        res.sendStatus(400);
+      }
+
+    } else {
+      res.sendStatus(400)
+    }
+
+  } catch {
+    res.sendStatus(500);
+  }
+})
+
+server.post('/sign-up', async (req, res) => {
+  try {
+    const { error } = signUpSchema.validate(req.body);
+    if (!error) {
+      const { name, email, password } = req.body;
+      const checkClient = await connection.query(`SELECT * FROM clients WHERE email=$1`, [email]);
+      if (checkClient.rows.length > 0) return res.sendStatus(409);
+
+      const hash = bcrypt.hashSync(password, 10);
+      const newClient = await connection.query(`INSERT INTO clients(name, email, password, islogged) VALUES ($1,$2,$3,$4)`, [name, email, hash, false]);
+      res.sendStatus(201);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (e){
+    console.log(e);
+    res.sendStatus(500);
+  }
+})
+
+server.post('/logout', async (req, res) => {
+  try {
+    if (!req.headers.authorization) return res.sendStatus(401);
+    const token = req.headers.authorization.substring(7,);
+    const clientId = await connection.query(`SELECT * FROM sessions WHERE token=$1`, [token]);
+    await connection.query(`DELETE FROM sessions WHERE "clientId"=$1`, [clientId.rows[0].clientId]);
+    await connection.query(`UPDATE clients SET islogged=$1 WHERE id=$2`, [false, clientId.rows[0].clientId]);
+    res.sendStatus(200);
+  } catch (e){
+    console.log(e);
+    res.sendStatus(500);
+  }
+})
+
+
+server.get('/cart', async (req, res) => {
+  if (!req.headers.authorization) return res.sendStatus(401);
+
+  const token = req.headers.authorization.substring(7,);
+  const client = await connection.query(`SELECT clients.*, sessions.token FROM clients JOIN sessions ON sessions."clientId" = clients.id WHERE sessions.token=$1`, [token]);
+
+})
+
+server.post('/add-to-cart', async (req, res) => {
+  if (!req.headers.authorization) return res.sendStatus(401);
+
+  const token = req.headers.authorization.substring(7,);
+  const client = await connection.query(`SELECT clients.*, sessions.token FROM clients JOIN sessions ON sessions."clientId" = clients.id WHERE sessions.token=$1`, [token]);
+  if (client.rows.length > 0) {
+    const { productId, productCategory, size } = req.body;
+    const checkIfAdded = await connection.query(`SELECT * FROM items WHERE "productId"=$1 AND "productCategory"=$2 AND "clientId"=$3 AND size=$4`, [productId, productCategory, client.rows[0].id, size]);
+    if (checkIfAdded.rows.length > 0) {
+      await connection.query(`UPDATE items SET quantity=$1 WHERE id=$2`, [checkIfAdded.rows[0].quantity + 1, checkIfAdded.rows[0].id]);
+    } else {
+      await connection.query(`INSERT INTO items("productId","productCategory","clientId",size,quantity) VALUES ($1,$2,$3,$4,$5)`, [productId, productCategory, client.rows[0].id, size, 1]);
+    }
+    res.sendStatus(201);
+
+  } else {
+    res.sendStatus(404);
+  }
+})
 
 server.post("/add-shirt", async (req, res) => {
   const errors = insertShirtSchema.validate(req.body).error;
