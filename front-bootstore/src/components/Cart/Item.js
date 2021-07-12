@@ -16,7 +16,7 @@ export default function Item({item, setRender, render}){
             }
         }
         
-        const request = axios.post('http://localhost:4000/add-to-cart', body, config);
+        const request = axios.post('https://bootstoree.herokuapp.com/add-to-cart', body, config);
         request.then(reply => {
             alert("Product added to your cart :)");
             setRender(render + 1);
@@ -34,7 +34,7 @@ export default function Item({item, setRender, render}){
             }
         }
         
-        const request = axios.post('http://localhost:4000/remove-from-cart', body, config);
+        const request = axios.post('https://bootstoree.herokuapp.com/remove-from-cart', body, config);
         request.then(reply => {
             alert("Product removed from your cart :)");
             setRender(render + 1);

@@ -11,7 +11,10 @@ export default function Cart(){
     const [totalPrice, setTotalPrice] = useState(0);
     const [items, setItems] = useState([]);
     const token = JSON.parse(localStorage.getItem("clientInformations"))?.token;
-    const history = useHistory(UserContext);
+    const {isLogged,clientInformations} = useContext(UserContext);
+    const [render, setRender] = useState(0)
+    const [taxes, setTaxes] = useState(20.50)
+    const history = useHistory()
     const config = {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -48,7 +51,7 @@ export default function Cart(){
                 "Authorization": "Bearer " + clientInformations.token
             }
         }
-        const request = axios.post('http://localhost:4000/checkout', body, config);
+        const request = axios.post('https://bootstoree.herokuapp.com/checkout', body, config);
         request.then(reply => {
             alert("checkout was successfull");
             history.push('/');
