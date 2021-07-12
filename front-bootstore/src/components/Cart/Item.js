@@ -1,18 +1,65 @@
 import styled from 'styled-components';
+import axios from "axios";
+import UserContext from "../contexts/UserContext";
+import { useContext } from 'react';
+export default function Item({item, setRender, render}){
+    const {id,name, image, description, price, quantity, size, color, category_id} = item;
+    const {clientInformations, isLogged, setClientInformations, setIsLogged} = useContext(UserContext);
 
-export default function Item({item}){
-    const {name, image, description, price} = item;
+    
+    function addToCart(){
+        
+        const body = {productId: id, productCategory: category_id, size: size}
+        const config = {
+            headers: {
+                "Authorization": "Bearer " + clientInformations.token
+            }
+        }
+        
+        const request = axios.post('http://localhost:4000/add-to-cart', body, config);
+        request.then(reply => {
+            alert("Product added to your cart :)");
+            setRender(render + 1);
+        })
+        request.catch(error => {
+            console.log(error);
+        })
+    }
+
+    function removeFromCart(){
+        const body = {productId: id, productCategory: category_id, size: size}
+        const config = {
+            headers: {
+                "Authorization": "Bearer " + clientInformations.token
+            }
+        }
+        
+        const request = axios.post('http://localhost:4000/remove-from-cart', body, config);
+        request.then(reply => {
+            alert("Product removed from your cart :)");
+            setRender(render + 1);
+        })
+        request.catch(error => {
+            console.log(error);
+        })
+        
+    }
+
+    
     return(
         <Content>
             <Image src={image} />
-            <Total>R$ {price}</Total>
+            <Total>R$ {(parseFloat(price)*quantity).toFixed(2)}</Total>
             <Informations>
                 <Name>{name}</Name>
                 <Description>{description}</Description>
+                <Size>size: {size}</Size>
+                {!!color ? <Color>color: {color}</Color> : ''}
+                
                 <Buttons>
-                    <AddButton >+</AddButton>
-                    <Quantity>1</Quantity>
-                    <RemoveButton>-</RemoveButton>
+                    <AddButton onClick={addToCart} >+</AddButton>
+                    <Quantity>{quantity}</Quantity>
+                    <RemoveButton onClick={removeFromCart} >-</RemoveButton>
                     <Times>x</Times>
                     <Price>R$ {price}</Price>
                 </Buttons>
@@ -22,6 +69,15 @@ export default function Item({item}){
 
     )
 }
+
+const Size = styled.div`
+    margin: 10px 0;
+    color: 	#606060;
+`
+const Color = styled.div`
+    margin: 10px 0;
+    color: 	#606060;
+`
 
 const Content = styled.li`
     width: 100%;
@@ -77,6 +133,10 @@ const AddButton = styled.button`
     background-color: inherit;
     border: 1px solid #c2c2c2;
     border-radius: 5px 0 0 5px;
+    transition: all .3s ease;
+    &:hover{
+        background-color: #606060;
+    }
     
 `
 const RemoveButton = styled.button`
@@ -86,6 +146,11 @@ const RemoveButton = styled.button`
     background-color: inherit;
     border: 1px solid #c2c2c2;
     border-radius: 0 5px 5px 0;
+    transition: all .3s ease;
+    &:hover{
+        background-color: #606060;
+    }
+    
     
 `
 const Quantity = styled.div`

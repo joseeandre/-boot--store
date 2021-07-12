@@ -1,32 +1,95 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import NavBar from "../Navbar/Navbar";
 import styled from "styled-components";
 import axios from 'axios';
 import Item from './Item';
+import UserContext from '../contexts/UserContext';
+import { useHistory } from 'react-router-dom';
 
 export default function Cart(){
     const [numberOfProducts, setNumberOfProducts] = useState(0);
+    const [totalPrice, setTotalPrice] = useState(0);
     const [items, setItems] = useState([]);
+    const {isLogged,clientInformations} = useContext(UserContext);
+    const [render, setRender] = useState(0)
+    const [taxes, setTaxes] = useState(20.50)
+    const history = useHistory()
 
     useEffect(() => {
-        const request = axios.get('http://localhost:4000/cart');
+        const config = {
+            headers: {
+                "Authorization": "Bearer " + clientInformations.token
+            }
+        }
+        const request = axios.get('http://localhost:4000/cart', config);
         request.then(reply => {
             console.log(reply.data);
+            let sum = 0;
+            for(let i = 0; i < reply.data.length; i++){
+                const product = reply.data[i]
+                sum += product.price*product.quantity;
+            }
+            setTotalPrice(sum);
             setNumberOfProducts(reply.data.length);
             setItems(reply.data);
         })
-    }, [])
+
+        
+
+    }, [render])
+
+
+    function checkout(){
+        const confirm = window.confirm("Are you sure?");
+        if(!confirm) return;
+        const date = new Date();
+        const now = date.toLocaleString();
+        const body = {total: (taxes + totalPrice).toFixed(2), date: now};
+        const config = {
+            headers: {
+                "Authorization": "Bearer " + clientInformations.token
+            }
+        }
+        const request = axios.post('http://localhost:4000/checkout', body, config);
+        request.then(reply => {
+            alert("checkout was successfull");
+            history.push('/');
+        })
+        request.catch(error => {
+            console.log(error);
+        })
+        
+    }
+
+
     return(
         <>
             <NavBar></NavBar>
+            <Hole></Hole>
             <Content>
             <ClientCart>
+                {!isLogged ? <LoginMessage>Please login to access your cart :)</LoginMessage> :
                 <Items>
                     <ItemsTitle>Your Card ({numberOfProducts})</ItemsTitle>
-                    {items.map(item => <Item item={item}></Item>)}
+                    {items.map((item,i) => <Item key={i} item={item} setRender={setRender} render={render} ></Item>)}
                 </Items>
+                }
                 <Summary>
                     <SummaryTitle>SUMMARY</SummaryTitle>
+                    <Total>
+                    <div>SubTotal</div>
+                    <div>R$ {totalPrice.toFixed(2)}</div>
+                    </Total>
+                    <Total>
+                    <div>Taxes</div>
+                    <div>R$ {taxes.toFixed(2)}</div>
+                    </Total>
+                    <TotalAmount>
+                    <div>Total</div>
+                    <div>R$ {(taxes + totalPrice).toFixed(2)}</div>
+                    </TotalAmount>
+                    
+                    <CheckOut onClick={checkout}>Checkout</CheckOut>
                 </Summary>
             </ClientCart>
             </Content>
@@ -34,10 +97,38 @@ export default function Cart(){
     )
 }
 
-const Content = styled.div`
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.9) 100%), url('https://img.freepik.com/free-photo/assortment-with-warm-clothes-brick-wall_23-2148312009.jpg?size=626&ext=jpg');
-    padding: 30px 0;
+const Total = styled.div`
+    width: 100%;
+    margin-top: 20px;
+    font-size: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`
+const TotalAmount = styled.div`
+    width: 100%;
+    margin-top: 20px;
+    font-size: 25px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`
+const LoginMessage = styled.div`
+    font-size: 30px;
+    color: #fff;
+`
 
+const Hole = styled.div`
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.9) 100%), url('https://img.freepik.com/free-photo/assortment-with-warm-clothes-brick-wall_23-2148312009.jpg?size=626&ext=jpg');
+    position: fixed;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+`
+const Content = styled.div`
+    padding: 30px 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.9) 100%), url('https://img.freepik.com/free-photo/assortment-with-warm-clothes-brick-wall_23-2148312009.jpg?size=626&ext=jpg');
+    
 `
 const ClientCart = styled.div`
     margin: 0 auto 0 auto ;
@@ -47,14 +138,15 @@ const ClientCart = styled.div`
 `
 
 const ItemsTitle = styled.div`
-    color: orange;
+    color: #DAA520;
     font-size: 30px;
+    font-weight: bold;
     
 `
 
 const SummaryTitle = styled.div`
-    color: #fff;
     font-size: 30px;
+    font-weight: bold;
 `
 
 const Items = styled.ul`
@@ -82,7 +174,21 @@ const Summary = styled.div`
     border-radius: 5px;
     box-shadow: 0 1px 5px 1px #000;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     padding: 10px;
+    color: #fff;
+`
+const CheckOut = styled.button`
+    margin-top: 40px;
+    width: 70%;
+    height: 40px;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    color: #fff;
+    background-color: #DAA520;
+    border-radius: 5px;
+    cursor: pointer;
 
 `
