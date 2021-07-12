@@ -6,7 +6,7 @@ import axios from 'axios';
 import { IconContext } from "react-icons";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 
-export default function Login(){
+export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailRef, setEmailRef] = useState(false);
@@ -17,10 +17,10 @@ export default function Login(){
     const [shakeOnError, setShakeOnError] = useState(false);
     const [visibility, setVisibility] = useState(false);
 
-    function signIn(e){
+    function signIn(e) {
         e.preventDefault();
         setShakeOnError(false);
-        const body = {email, password};
+        const body = { email, password };
         const request = axios.post("http://localhost:4000/sign-in", body);
         request.then(reply => {
 
@@ -31,12 +31,14 @@ export default function Login(){
         })
     }
 
-    return(
-        <LoginPage onClick={() => {if(email === '') setEmailRef(false)
-                                    setEmailRefColor(false)
-                                    if(password === '') setPasswordRef(false)
-                                    setPasswordRefColor(false)}} >
-            <NavBar/>
+    return (
+        <LoginPage onClick={() => {
+            if (email === '') setEmailRef(false)
+            setEmailRefColor(false)
+            if (password === '') setPasswordRef(false)
+            setPasswordRefColor(false)
+        }} >
+            <NavBar />
             <Content>
                 <Hole></Hole>
                 <LoginArea >
@@ -44,27 +46,35 @@ export default function Login(){
                         <Title>Login</Title>
                         <InputHolder error={error} emailRefColor={emailRefColor} emailRef={emailRef} >
                             <Label id="email-label" htmlFor="email" shakeOnError={shakeOnError} >Email</Label>
-                            <Input onClick={e => e.stopPropagation()} onKeyDown={() => {setEmailRef(true)
-                                                                                        setEmailRefColor(true)}} onFocus={() => {setEmailRef(true)
-                                                                                                                          setEmailRefColor(true)
-                                                                                                                          if(password === '') setPasswordRef(false)
-                                                                                                                          setPasswordRefColor(false)}} id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
-                        
-                        <ErrorMessage error={error}>incorrect email/password</ErrorMessage>
+                            <Input onClick={e => e.stopPropagation()} onKeyDown={() => {
+                                setEmailRef(true)
+                                setEmailRefColor(true)
+                            }} onFocus={() => {
+                                setEmailRef(true)
+                                setEmailRefColor(true)
+                                if (password === '') setPasswordRef(false)
+                                setPasswordRefColor(false)
+                            }} id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+
+                            <ErrorMessage error={error}>incorrect email/password</ErrorMessage>
                         </InputHolder>
-                        
+
                         <InputHolder error={error} passwordRefColor={passwordRefColor} passwordRef={passwordRef} visibility={visibility} >
                             <Label id="password-label" htmlFor="password" shakeOnError={shakeOnError} >Password</Label>
-                            <Input onClick={e => e.stopPropagation()} onKeyDown={() => {setPasswordRef(true)
-                                                                                        setPasswordRefColor(true)}} onFocus={() => {setPasswordRef(true)
-                                                                                                                            setPasswordRefColor(true)
-                                                                                                                            if(email === '') setEmailRef(false)
-                                                                                                                            setEmailRefColor(false)}} id="password" type={ visibility ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required />
-                        
-                            <IconContext.Provider value={{className: "visibility-icon"}} >
+                            <Input onClick={e => e.stopPropagation()} onKeyDown={() => {
+                                setPasswordRef(true)
+                                setPasswordRefColor(true)
+                            }} onFocus={() => {
+                                setPasswordRef(true)
+                                setPasswordRefColor(true)
+                                if (email === '') setEmailRef(false)
+                                setEmailRefColor(false)
+                            }} id="password" type={visibility ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required />
+
+                            <IconContext.Provider value={{ className: "visibility-icon" }} >
                                 <IoEye onClick={() => setVisibility(true)} ></IoEye>
                             </IconContext.Provider>
-                            <IconContext.Provider value={{className: "invisibility-icon"}} >
+                            <IconContext.Provider value={{ className: "invisibility-icon" }} >
                                 <IoEyeOff onClick={() => setVisibility(false)} ></IoEyeOff>
                             </IconContext.Provider>
                         </InputHolder>
@@ -216,7 +226,7 @@ const Label = styled.label`
     position: absolute;
     left: 10px;
     transition: all .3s ease-in-out;
-    animation: ${props => props.shakeOnError ? 'shake .5s' : '' } ;
+    animation: ${props => props.shakeOnError ? 'shake .5s' : ''} ;
     
     @keyframes shake {
         0% { transform: translate(1px, 1px) }
