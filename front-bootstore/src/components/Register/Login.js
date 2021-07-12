@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import styled from 'styled-components';
 import NavBar from '../Navbar/Navbar';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { IconContext } from "react-icons";
 import { IoEye, IoEyeOff } from "react-icons/io5";
+import UserContext from '../contexts/UserContext';
 
 export default function Login(){
     const [email, setEmail] = useState('');
@@ -16,14 +17,19 @@ export default function Login(){
     const [error, setError] = useState(false);
     const [shakeOnError, setShakeOnError] = useState(false);
     const [visibility, setVisibility] = useState(false);
-
+    const history = useHistory();
+    const { isLogged, clientInformations, setIsLogged, setClientInformations} = useContext(UserContext);
+    
     function signIn(e){
         e.preventDefault();
         setShakeOnError(false);
         const body = {email, password};
         const request = axios.post("http://localhost:4000/sign-in", body);
         request.then(reply => {
-
+            localStorage.setItem("clientInformations", JSON.stringify(reply.data));
+            setClientInformations(reply.data)
+            setIsLogged(true)
+            history.push('/')
         })
         request.catch(() => {
             setError(true);
@@ -37,8 +43,11 @@ export default function Login(){
                                     if(password === '') setPasswordRef(false)
                                     setPasswordRefColor(false)}} >
             <NavBar/>
-            <Content>
+            
                 <Hole></Hole>
+                {isLogged ? <ClientInformations>name: {clientInformations.name}<br></br> email: {clientInformations.email}</ClientInformations> :
+                
+            <Content>
                 <LoginArea >
                     <Form onSubmit={signIn}>
                         <Title>Login</Title>
@@ -73,6 +82,9 @@ export default function Login(){
                     </Form>
                 </LoginArea>
             </Content>
+                
+            }
+            
         </LoginPage>
     )
 
@@ -82,7 +94,7 @@ const LoginPage = styled.div`
 
 `
 const Hole = styled.div`
-    background: #f0f0f0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.9) 100%), url('https://img.freepik.com/free-photo/assortment-with-warm-clothes-brick-wall_23-2148312009.jpg?size=626&ext=jpg');
     position: fixed;
     z-index: -1;
     width: 100%;
@@ -100,6 +112,15 @@ const Content = styled.div`
    
     
 `
+
+const ClientInformations = styled.div`
+    font-family: 'Poppins' !important;
+    color: #fff;
+    position: fixed;
+    top:26vh;
+    left: 10px;
+`
+
 const LoginArea = styled.div`
     width: 50%;
     display: flex;
