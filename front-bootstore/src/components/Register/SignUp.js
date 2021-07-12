@@ -39,7 +39,7 @@ export default function SignUp() {
         }
 
         const body = { name, email, password, confirmPassword };
-        const request = axios.post("http://localhost:4000/sign-up", body);
+        const request = axios.post("https://bootstoree.herokuapp.com/sign-up", body);
         request.then(reply => {
             history.push('/register');
 

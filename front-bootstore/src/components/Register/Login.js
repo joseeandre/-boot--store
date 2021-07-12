@@ -24,7 +24,7 @@ export default function Login() {
         e.preventDefault();
         setShakeOnError(false);
         const body = { email, password };
-        const request = axios.post("http://localhost:4000/sign-in", body);
+        const request = axios.post("https://bootstoree.herokuapp.com/sign-in", body);
         request.then(reply => {
             localStorage.setItem("clientInformations", JSON.stringify(reply.data));
             setClientInformations(reply.data)

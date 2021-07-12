@@ -9,7 +9,7 @@ export default function Cart(){
     const [items, setItems] = useState([]);
 
     useEffect(() => {
-        const request = axios.get('http://localhost:4000/cart');
+        const request = axios.get('https://bootstoree.herokuapp.com/cart');
         request.then(reply => {
             console.log(reply.data);
             setNumberOfProducts(reply.data.length);
