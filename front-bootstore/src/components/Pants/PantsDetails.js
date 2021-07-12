@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Navbar from "../Navbar/Navbar";
 import ProductsList from "../ProductsList/ProductsList";
 import axios from "axios";
+import UserContext from "../contexts/UserContext";
+
 
 export default function PantsDetails() {
     const pantsSizes = ["38", "40", "42", "44"];
@@ -11,15 +13,47 @@ export default function PantsDetails() {
     const params = useParams();
     const { id } = params;
     const [pantsSize, setPantsSize] = useState("");
+    const {clientInformations, isLogged, setClientInformations, setIsLogged} = useContext(UserContext);
+
     useEffect(() => {
         const pantsRequest = axios.get(`http://localhost:4000/pants?id=${id}`);
 
         pantsRequest.then((response) => {
+            console.log(response.data);
             setPants([...response.data]);
         }).catch((error) => {
             console.log(error);
         })
     }, []);
+
+    function addToCart(){
+        if(pantsSize === '') {
+            alert("select a size");
+            return;
+        }
+        
+        if(!isLogged){
+            alert("Please login to add this item to your cart :)");
+            return;
+        }
+        
+        const body = {productId: id, productCategory: pants[0].category_id, size: pantsSize}
+        const config = {
+            headers: {
+                "Authorization": "Bearer " + clientInformations.token
+            }
+        }
+        console.log(body);
+        const request = axios.post('http://localhost:4000/add-to-cart', body, config);
+        request.then(reply => {
+            alert("Product added to your cart :)");
+        })
+        request.catch(error => {
+            console.log(error);
+        })
+    }
+    
+
 
     return (
         <>
@@ -38,7 +72,7 @@ export default function PantsDetails() {
                         {pantsSizes.map((item) => <div className={item === pantsSize ? "filter border" : "filter"} onClick={() => setPantsSize(item)}>{item}</div>)}
                     </div>
                     <div className="filter-class">{`$ ${pants[0].price}`}</div>
-                    <button>Add to Cart</button>
+                    <button onClick={addToCart} >Add to Cart</button>
                 </div>
             </Container>
         </>

@@ -14,11 +14,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dayjs": "^1.10.6",
     "express": "^4.17.1",
     "jest": "^27.0.6",
-    "joi": "^17.4.0",
+    "joi": "^17.4.1",
     "pg": "^8.6.0",
     "string-strip-html": "^8.3.0",
     "supertest": "^6.1.3",
