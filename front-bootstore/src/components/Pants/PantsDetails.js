@@ -16,7 +16,7 @@ export default function PantsDetails() {
     const {clientInformations, isLogged, setClientInformations, setIsLogged} = useContext(UserContext);
 
     useEffect(() => {
-        const pantsRequest = axios.get(`http://localhost:4000/pants?id=${id}`);
+        const pantsRequest = axios.get(`https://bootstoree.herokuapp.com/pants?id=${id}`);
 
         pantsRequest.then((response) => {
             console.log(response.data);
@@ -44,7 +44,7 @@ export default function PantsDetails() {
             }
         }
         console.log(body);
-        const request = axios.post('http://localhost:4000/add-to-cart', body, config);
+        const request = axios.post('https://bootstoree.herokuapp.com/add-to-cart', body, config);
         request.then(reply => {
             alert("Product added to your cart :)");
         })

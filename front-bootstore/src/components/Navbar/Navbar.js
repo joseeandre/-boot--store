@@ -21,7 +21,7 @@ export default function NavBar(props) {
                 "Authorization": "Bearer " + clientInformations.token
             }
         }
-        const request = axios.post("http://localhost:4000/logout", {}, config);
+        const request = axios.post("https://bootstoree.herokuapp.com/logout", {}, config);
         request.then(reply => {
             setClientInformations(null);
             localStorage.removeItem('clientInformations');

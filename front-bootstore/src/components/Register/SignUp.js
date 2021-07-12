@@ -6,7 +6,7 @@ import axios from 'axios';
 import { IconContext } from "react-icons";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 
-export default function SignUp(){
+export default function SignUp() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -26,41 +26,44 @@ export default function SignUp(){
     const [visibility, setVisibility] = useState(false);
     const history = useHistory();
 
-    function signUp(e){
+    function signUp(e) {
         e.preventDefault();
         setShakeOnEmailError(false);
         setShakeOnPasswordError(false);
-        
-        if(password !== confirmPassword){
+
+        if (password !== confirmPassword) {
             setShakeOnPasswordError(true);
             setPasswordError(true);
             setEmailError(false);
             return;
         }
-        
-        const body = {name, email, password, confirmPassword};
-        const request = axios.post("http://localhost:4000/sign-up", body);
+
+        const body = { name, email, password, confirmPassword };
+        const request = axios.post("https://bootstoree.herokuapp.com/sign-up", body);
         request.then(reply => {
             history.push('/register');
 
         })
-        request.catch(() => {
+        request.catch((error) => {
             setEmailError(true);
             setShakeOnEmailError(true);
             setPasswordError(false);
+            console.log(error);
         })
     }
 
-    return(
-        <SignUpPage onClick={() => {if(name === '') setNameRef(false)
-                                    setNameRefColor(false)
-                                    if(email === '') setEmailRef(false)
-                                    setEmailRefColor(false)
-                                    if(password === '') setPasswordRef(false)
-                                    setPasswordRefColor(false)
-                                    if(confirmPassword === '') setConfirmPasswordRef(false)
-                                    setConfirmPasswordRefColor(false)}} >
-            <NavBar/>
+    return (
+        <SignUpPage onClick={() => {
+            if (name === '') setNameRef(false)
+            setNameRefColor(false)
+            if (email === '') setEmailRef(false)
+            setEmailRefColor(false)
+            if (password === '') setPasswordRef(false)
+            setPasswordRefColor(false)
+            if (confirmPassword === '') setConfirmPasswordRef(false)
+            setConfirmPasswordRefColor(false)
+        }} >
+            <NavBar />
             <Content>
                 <Hole></Hole>
                 <SignUpArea >
@@ -68,65 +71,81 @@ export default function SignUp(){
                         <Title>Create an account</Title>
                         <InputHolder nameRefColor={nameRefColor} nameRef={nameRef} >
                             <Label id="name-label" htmlFor="name"  >Name</Label>
-                            <Input onClick={e => e.stopPropagation()} onKeyDown={() => {setNameRef(true)
-                                                                                        setNameRefColor(true)}} onFocus={() => {setNameRef(true)
-                                                                                                                          setNameRefColor(true)
-                                                                                                                          if(password === '') setPasswordRef(false)
-                                                                                                                          setPasswordRefColor(false)
-                                                                                                                          if(email === '') setEmailRef(false)
-                                                                                                                          setEmailRefColor(false)
-                                                                                                                          if(confirmPassword === '') setConfirmPasswordRef(false)
-                                                                                                                          setConfirmPasswordRefColor(false)}} id="name" type="text" value={name} onChange={e => setName(e.target.value)} required />
+                            <Input onClick={e => e.stopPropagation()} onKeyDown={() => {
+                                setNameRef(true)
+                                setNameRefColor(true)
+                            }} onFocus={() => {
+                                setNameRef(true)
+                                setNameRefColor(true)
+                                if (password === '') setPasswordRef(false)
+                                setPasswordRefColor(false)
+                                if (email === '') setEmailRef(false)
+                                setEmailRefColor(false)
+                                if (confirmPassword === '') setConfirmPasswordRef(false)
+                                setConfirmPasswordRefColor(false)
+                            }} id="name" type="text" value={name} onChange={e => setName(e.target.value)} required />
                         </InputHolder>
 
-                        <InputHolder id="email-holder" emailError={emailError}  emailRefColor={emailRefColor} emailRef={emailRef} shakeOnEmailError={shakeOnEmailError} >
+                        <InputHolder id="email-holder" emailError={emailError} emailRefColor={emailRefColor} emailRef={emailRef} shakeOnEmailError={shakeOnEmailError} >
                             <Label id="email-label" htmlFor="email" >Email</Label>
-                            <Input onClick={e => e.stopPropagation()} onKeyDown={() => {setEmailRef(true)
-                                                                                        setEmailRefColor(true)}} onFocus={() => {setEmailRef(true)
-                                                                                                                          setEmailRefColor(true)
-                                                                                                                          if(password === '') setPasswordRef(false)
-                                                                                                                          setPasswordRefColor(false)
-                                                                                                                          if(name === '') setNameRef(false)
-                                                                                                                          setNameRefColor(false)
-                                                                                                                          if(confirmPassword === '') setConfirmPasswordRef(false)
-                                                                                                                          setConfirmPasswordRefColor(false)}} id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
-                        
-                        <ErrorMessage emailError={emailError}>this email is already on use</ErrorMessage>
+                            <Input onClick={e => e.stopPropagation()} onKeyDown={() => {
+                                setEmailRef(true)
+                                setEmailRefColor(true)
+                            }} onFocus={() => {
+                                setEmailRef(true)
+                                setEmailRefColor(true)
+                                if (password === '') setPasswordRef(false)
+                                setPasswordRefColor(false)
+                                if (name === '') setNameRef(false)
+                                setNameRefColor(false)
+                                if (confirmPassword === '') setConfirmPasswordRef(false)
+                                setConfirmPasswordRefColor(false)
+                            }} id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+
+                            <ErrorMessage emailError={emailError}>this email is already on use</ErrorMessage>
                         </InputHolder>
-                        
-                        <InputHolder id="password-holder" passwordError={passwordError}  passwordRefColor={passwordRefColor} passwordRef={passwordRef} shakeOnPasswordError={shakeOnPasswordError} visibility={visibility} >
+
+                        <InputHolder id="password-holder" passwordError={passwordError} passwordRefColor={passwordRefColor} passwordRef={passwordRef} shakeOnPasswordError={shakeOnPasswordError} visibility={visibility} >
                             <Label id="password-label" htmlFor="password" >Password</Label>
-                            <Input onClick={e => e.stopPropagation()} onKeyDown={() => {setPasswordRef(true)
-                                                                                        setPasswordRefColor(true)}} onFocus={() => {setPasswordRef(true)
-                                                                                                                            setPasswordRefColor(true)
-                                                                                                                            if(email === '') setEmailRef(false)
-                                                                                                                            setEmailRefColor(false)
-                                                                                                                            if(name === '') setNameRef(false)
-                                                                                                                            setNameRefColor(false)
-                                                                                                                            if(confirmPassword === '') setConfirmPasswordRef(false)
-                                                                                                                            setConfirmPasswordRefColor(false)}} id="password" type={ visibility ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required />
-                        
-                            <IconContext.Provider value={{className: "visibility-icon"}} >
+                            <Input onClick={e => e.stopPropagation()} onKeyDown={() => {
+                                setPasswordRef(true)
+                                setPasswordRefColor(true)
+                            }} onFocus={() => {
+                                setPasswordRef(true)
+                                setPasswordRefColor(true)
+                                if (email === '') setEmailRef(false)
+                                setEmailRefColor(false)
+                                if (name === '') setNameRef(false)
+                                setNameRefColor(false)
+                                if (confirmPassword === '') setConfirmPasswordRef(false)
+                                setConfirmPasswordRefColor(false)
+                            }} id="password" type={visibility ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required />
+
+                            <IconContext.Provider value={{ className: "visibility-icon" }} >
                                 <IoEye onClick={() => setVisibility(true)} ></IoEye>
                             </IconContext.Provider>
-                            
-                            <IconContext.Provider value={{className: "invisibility-icon"}} >
+
+                            <IconContext.Provider value={{ className: "invisibility-icon" }} >
                                 <IoEyeOff onClick={() => setVisibility(false)} ></IoEyeOff>
                             </IconContext.Provider>
                         </InputHolder>
-                        
+
                         <InputHolder id="confirm-password-holder" passwordError={passwordError} confirmPasswordRefColor={confirmPasswordRefColor} confirmPasswordRef={confirmPasswordRef} shakeOnPasswordError={shakeOnPasswordError} >
                             <Label id="confirm-password-label" htmlFor="confirm-password" >Confirm Password</Label>
-                            <Input onClick={e => e.stopPropagation()} onKeyDown={() => {setConfirmPasswordRef(true)
-                                                                                        setConfirmPasswordRefColor(true)}} onFocus={() => {setConfirmPasswordRef(true)
-                                                                                                                            setConfirmPasswordRefColor(true)
-                                                                                                                            if(email === '') setEmailRef(false)
-                                                                                                                            setEmailRefColor(false)
-                                                                                                                            if(name === '') setNameRef(false)
-                                                                                                                            setNameRefColor(false)
-                                                                                                                            if(password === '') setPasswordRef(false)
-                                                                                                                            setPasswordRefColor(false)}} id="confirm-password" type={ visibility ? "text" : "password"} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required />
-                         <PasswordsMatch passwordError={passwordError}>passwords don't match</PasswordsMatch>
+                            <Input onClick={e => e.stopPropagation()} onKeyDown={() => {
+                                setConfirmPasswordRef(true)
+                                setConfirmPasswordRefColor(true)
+                            }} onFocus={() => {
+                                setConfirmPasswordRef(true)
+                                setConfirmPasswordRefColor(true)
+                                if (email === '') setEmailRef(false)
+                                setEmailRefColor(false)
+                                if (name === '') setNameRef(false)
+                                setNameRefColor(false)
+                                if (password === '') setPasswordRef(false)
+                                setPasswordRefColor(false)
+                            }} id="confirm-password" type={visibility ? "text" : "password"} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required />
+                            <PasswordsMatch passwordError={passwordError}>passwords don't match</PasswordsMatch>
                         </InputHolder>
                         <Button>Sign Up</Button>
                         <LoginLink to="/register" >Already a client? Login into your account!</LoginLink>
@@ -256,7 +275,7 @@ const InputHolder = styled.div`
         background:${props => props.emailRef ? '#ffffff' : ''};
         font-size: ${props => props.emailRef ? '15px' : '25px'};
         color: ${props => props.emailError ? '#ff5252' : (props.emailRefColor ? 'rgb(113,60,151)' : '#808080')};
-        animation: ${props => props.shakeOnEmailError ? 'shake .5s' : '' } ;
+        animation: ${props => props.shakeOnEmailError ? 'shake .5s' : ''} ;
     
         @keyframes shake {
             0% { transform: translate(1px, 1px) }
@@ -278,7 +297,7 @@ const InputHolder = styled.div`
         background:${props => props.passwordRef ? '#ffffff' : ''};
         font-size: ${props => props.passwordRef ? '15px' : '25px'};
         color: ${props => props.passwordError ? '#ff5252' : (props.passwordRefColor ? 'rgb(113,60,151)' : '#808080')};
-        animation: ${props => props.shakeOnPasswordError ? 'shake .5s' : '' } ;
+        animation: ${props => props.shakeOnPasswordError ? 'shake .5s' : ''} ;
     
         @keyframes shake {
             0% { transform: translate(1px, 1px) }
@@ -300,7 +319,7 @@ const InputHolder = styled.div`
         background:${props => props.confirmPasswordRef ? '#ffffff' : ''};
         font-size: ${props => props.confirmPasswordRef ? '15px' : '25px'};
         color: ${props => props.passwordError ? '#ff5252' : (props.confirmPasswordRefColor ? 'rgb(113,60,151)' : '#808080')};
-        animation: ${props => props.shakeOnPasswordError ? 'shake .5s' : '' } ;
+        animation: ${props => props.shakeOnPasswordError ? 'shake .5s' : ''} ;
     
         @keyframes shake {
             0% { transform: translate(1px, 1px) }
@@ -322,7 +341,7 @@ const InputHolder = styled.div`
     }
 
     #name{
-        caret-color: ${props =>  (props.nameRefColor ? 'rgb(113,60,151)' : '#808080')} ;
+        caret-color: ${props => (props.nameRefColor ? 'rgb(113,60,151)' : '#808080')} ;
     }
 
     #password{

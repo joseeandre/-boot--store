@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
-import Modal from "react-modal";
 
 export default function Shirt(props) {
     const objectFilter = { tshirt: true, pants: true };

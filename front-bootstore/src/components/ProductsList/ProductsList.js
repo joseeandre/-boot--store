@@ -13,8 +13,8 @@ export default function ProductsList(props) {
     const [pantsList, setPantsList] = useState([]);
 
     useEffect(() => {
-        const shirtsRequest = axios.get("http://localhost:4000/shirts");
-        const pantsRequest = axios.get("http://localhost:4000/pants");
+        const shirtsRequest = axios.get("https://bootstoree.herokuapp.com/shirts");
+        const pantsRequest = axios.get("https://bootstoree.herokuapp.com/pants");
 
         shirtsRequest.then((response) => {
             setShirtsFiltered([...response.data]);

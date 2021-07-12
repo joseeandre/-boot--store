@@ -7,7 +7,7 @@ import { IconContext } from "react-icons";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import UserContext from '../contexts/UserContext';
 
-export default function Login(){
+export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailRef, setEmailRef] = useState(false);
@@ -18,13 +18,13 @@ export default function Login(){
     const [shakeOnError, setShakeOnError] = useState(false);
     const [visibility, setVisibility] = useState(false);
     const history = useHistory();
-    const { isLogged, clientInformations, setIsLogged, setClientInformations} = useContext(UserContext);
-    
-    function signIn(e){
+    const { isLogged, clientInformations, setIsLogged, setClientInformations } = useContext(UserContext);
+
+    function signIn(e) {
         e.preventDefault();
         setShakeOnError(false);
-        const body = {email, password};
-        const request = axios.post("http://localhost:4000/sign-in", body);
+        const body = { email, password };
+        const request = axios.post("https://bootstoree.herokuapp.com/sign-in", body);
         request.then(reply => {
             localStorage.setItem("clientInformations", JSON.stringify(reply.data));
             setClientInformations(reply.data)
@@ -37,61 +37,70 @@ export default function Login(){
         })
     }
 
-    return(
-        <LoginPage onClick={() => {if(email === '') setEmailRef(false)
+    return (
+        <LoginPage onClick={() => {
+            if (email === '') setEmailRef(false)
+            setEmailRefColor(false)
+            if (password === '') setPasswordRef(false)
+            setPasswordRefColor(false)
+        }} >
+            <NavBar />
+
+            <Hole></Hole>
+            {isLogged ? <ClientInformations>name: {clientInformations.name}<br></br> email: {clientInformations.email}</ClientInformations> :
+
+                <Content>
+                    <LoginArea >
+                        <Form onSubmit={signIn}>
+                            <Title>Login</Title>
+                            <InputHolder error={error} emailRefColor={emailRefColor} emailRef={emailRef} >
+                                <Label id="email-label" htmlFor="email" shakeOnError={shakeOnError} >Email</Label>
+                                <Input onClick={e => e.stopPropagation()} onKeyDown={() => {
+                                    setEmailRef(true)
+                                    setEmailRefColor(true)
+                                }} onFocus={() => {
+                                    setEmailRef(true)
+                                    setEmailRefColor(true)
+                                    if (password === '') setPasswordRef(false)
+                                    setPasswordRefColor(false)
+                                }} id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+
+                                <ErrorMessage error={error}>incorrect email/password</ErrorMessage>
+                            </InputHolder>
+
+                            <InputHolder error={error} passwordRefColor={passwordRefColor} passwordRef={passwordRef} visibility={visibility} >
+                                <Label id="password-label" htmlFor="password" shakeOnError={shakeOnError} >Password</Label>
+                                <Input onClick={e => e.stopPropagation()} onKeyDown={() => {
+                                    setPasswordRef(true)
+                                    setPasswordRefColor(true)
+                                }} onFocus={() => {
+                                    setPasswordRef(true)
+                                    setPasswordRefColor(true)
+                                    if (email === '') setEmailRef(false)
                                     setEmailRefColor(false)
-                                    if(password === '') setPasswordRef(false)
-                                    setPasswordRefColor(false)}} >
-            <NavBar/>
-            
-                <Hole></Hole>
-                {isLogged ? <ClientInformations>name: {clientInformations.name}<br></br> email: {clientInformations.email}</ClientInformations> :
-                
-            <Content>
-                <LoginArea >
-                    <Form onSubmit={signIn}>
-                        <Title>Login</Title>
-                        <InputHolder error={error} emailRefColor={emailRefColor} emailRef={emailRef} >
-                            <Label id="email-label" htmlFor="email" shakeOnError={shakeOnError} >Email</Label>
-                            <Input onClick={e => e.stopPropagation()} onKeyDown={() => {setEmailRef(true)
-                                                                                        setEmailRefColor(true)}} onFocus={() => {setEmailRef(true)
-                                                                                                                          setEmailRefColor(true)
-                                                                                                                          if(password === '') setPasswordRef(false)
-                                                                                                                          setPasswordRefColor(false)}} id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
-                        
-                        <ErrorMessage error={error}>incorrect email/password</ErrorMessage>
-                        </InputHolder>
-                        
-                        <InputHolder error={error} passwordRefColor={passwordRefColor} passwordRef={passwordRef} visibility={visibility} >
-                            <Label id="password-label" htmlFor="password" shakeOnError={shakeOnError} >Password</Label>
-                            <Input onClick={e => e.stopPropagation()} onKeyDown={() => {setPasswordRef(true)
-                                                                                        setPasswordRefColor(true)}} onFocus={() => {setPasswordRef(true)
-                                                                                                                            setPasswordRefColor(true)
-                                                                                                                            if(email === '') setEmailRef(false)
-                                                                                                                            setEmailRefColor(false)}} id="password" type={ visibility ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required />
-                        
-                            <IconContext.Provider value={{className: "visibility-icon"}} >
-                                <IoEye onClick={() => setVisibility(true)} ></IoEye>
-                            </IconContext.Provider>
-                            <IconContext.Provider value={{className: "invisibility-icon"}} >
-                                <IoEyeOff onClick={() => setVisibility(false)} ></IoEyeOff>
-                            </IconContext.Provider>
-                        </InputHolder>
-                        <Button>Sign In</Button>
-                        <SignUpLink to="/sign-up" >First time? Create an account!</SignUpLink>
-                    </Form>
-                </LoginArea>
-            </Content>
-                
+                                }} id="password" type={visibility ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} required />
+
+                                <IconContext.Provider value={{ className: "visibility-icon" }} >
+                                    <IoEye onClick={() => setVisibility(true)} ></IoEye>
+                                </IconContext.Provider>
+                                <IconContext.Provider value={{ className: "invisibility-icon" }} >
+                                    <IoEyeOff onClick={() => setVisibility(false)} ></IoEyeOff>
+                                </IconContext.Provider>
+                            </InputHolder>
+                            <Button>Sign In</Button>
+                            <SignUpLink to="/sign-up" >First time? Create an account!</SignUpLink>
+                        </Form>
+                    </LoginArea>
+                </Content>
+
             }
-            
+
         </LoginPage>
     )
 
 }
 
 const LoginPage = styled.div`
-
 `
 const Hole = styled.div`
     background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.9) 100%), url('https://img.freepik.com/free-photo/assortment-with-warm-clothes-brick-wall_23-2148312009.jpg?size=626&ext=jpg');
@@ -149,7 +158,6 @@ const Form = styled.form`
         0%{
             transform: scale(0,0);
         }
-
         100%{
             transform: scale(1,1);
         }
@@ -162,7 +170,6 @@ const Title = styled.div`
     margin-bottom: 20px;
     font-size: 30px;
     font-weight: bold;
-
 `
 
 const InputHolder = styled.div`
@@ -193,29 +200,24 @@ const InputHolder = styled.div`
         color: ${props => props.error ? '#ff5252' : (props.passwordRefColor ? 'rgb(113,60,151)' : '#808080')}
         
     }
-
     #email{
         caret-color: ${props => props.error ? '#ff5252' : (props.passwordRefColor ? 'rgb(113,60,151)' : '#808080')} ;
     }
-
     #password{
         caret-color: ${props => props.error ? '#ff5252' : (props.passwordRefColor ? 'rgb(113,60,151)' : '#808080')} ;
     }
-
     .visibility-icon{
         font-size: 25px;
         position: absolute;
         right: 10px;
         display: ${props => props.visibility ? 'none' : ''};
     }
-
     .invisibility-icon{
         font-size: 25px;
         position: absolute;
         right: 10px;
         display: ${props => props.visibility ? '' : 'none'};
     }
-
 `
 
 
@@ -230,14 +232,13 @@ const Input = styled.input`
         outline: none;
     }
     
-
 `
 
 const Label = styled.label`
     position: absolute;
     left: 10px;
     transition: all .3s ease-in-out;
-    animation: ${props => props.shakeOnError ? 'shake .5s' : '' } ;
+    animation: ${props => props.shakeOnError ? 'shake .5s' : ''} ;
     
     @keyframes shake {
         0% { transform: translate(1px, 1px) }
@@ -283,7 +284,6 @@ const ErrorMessage = styled.div`
 `
 
 const SignUpLink = styled(Link)`
-
     color: #00008B;
     text-decoration: underline;
 `

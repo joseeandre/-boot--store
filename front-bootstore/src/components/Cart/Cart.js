@@ -10,18 +10,16 @@ export default function Cart(){
     const [numberOfProducts, setNumberOfProducts] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [items, setItems] = useState([]);
-    const {isLogged,clientInformations} = useContext(UserContext);
-    const [render, setRender] = useState(0)
-    const [taxes, setTaxes] = useState(20.50)
-    const history = useHistory()
+    const token = JSON.parse(localStorage.getItem("clientInformations"))?.token;
+    const history = useHistory(UserContext);
+    const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
 
     useEffect(() => {
-        const config = {
-            headers: {
-                "Authorization": "Bearer " + clientInformations.token
-            }
-        }
-        const request = axios.get('http://localhost:4000/cart', config);
+        const request = axios.get('https://bootstoree.herokuapp.com/cart', config);
         request.then(reply => {
             console.log(reply.data);
             let sum = 0;
